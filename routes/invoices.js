@@ -15,28 +15,34 @@ router.get('', async (req, res, next) => {
     }
 });
 
+/** return obj on given invoice*/
+router.get('/:id', async (req, res, next) => {    
+    const id = req.params.id;
+    
+    try {
+        const results = await db.query('SELECT * FROM companies WHERE id='id', //add sanitizer) 
+        return res.send( {invoice: {results}} ); //might need to check what is returned
+    } catch (error) {
+        return next(new ExpressError("Couldn't find invoice",404));
+    }
+});
+
+/** add an invoice*/
 router.post('', async (req, res, next) => {    
-    const req.body.code;
-    const req.body.name;
-    const req.body.description;
+    const comp_code = req.body.comp_code;
+    const amt = req.body.amt;
+    
     try {
-        const results = await db.query('SELECT * FROM companies') 
-        return res.send(results.rows); //maybe change to{companies: {}}
+        //add invoice
+        const results = await db.query('SELECT * FROM invoices') 
+        return res.send(results.rows); //maybe change to{invoices: {}}
     } catch (error) {
-        return next(new ExpressError("Couldn't add company",404));
+        return next(new ExpressError("Couldn't find data",404));
     }
 });
 
-router.get('/:code', async (req, res, next) => {    
-    try {
-        const results = await db.query('SELECT * FROM companies WHERE code=code', //add sanitizer) 
-        return res.send({company: {results}}); //might need to check what is returned
-    } catch (error) {
-        return next(new ExpressError("Couldn't find company",404));
-    }
-});
-
-router.put('/:code', async (req, res, next) => {    
+/** updates an invoice*/
+router.put('/:id', async (req, res, next) => {    
     const code = req.params.code;
     const name = req.body.name;
     const description = req.body.description;
