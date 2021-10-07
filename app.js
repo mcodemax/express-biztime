@@ -14,6 +14,8 @@ app.use(morgan('dev'));
 /** Routes related to companies*/
 app.use('/companies', companiesRoutes);
 
+/** Routes related to invoices*/
+app.use('/invoices', companiesRoutes);
 
 /** 404 handler */
 app.use(function(req, res, next) {
