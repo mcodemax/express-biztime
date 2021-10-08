@@ -1,11 +1,10 @@
 /** BizTime express application. */
-
-
 const express = require("express");
 const morgan = require('morgan');
 const app = express();
 const ExpressError = require("./expressError");
 const companiesRoutes = require('./routes/companies');
+// const invoicesRoutes = require('./routes/invoices');
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -15,7 +14,7 @@ app.use(morgan('dev'));
 app.use('/companies', companiesRoutes);
 
 /** Routes related to invoices*/
-app.use('/invoices', invoicesRoutes);
+// app.use('/invoices', invoicesRoutes);
 
 /** 404 handler */
 app.use(function(req, res, next) {
@@ -29,7 +28,7 @@ app.use((err, req, res, next) => {
 
   return res.json({
     error: err,
-    message: err.message
+    // message: err.message,
   });
 });
 
