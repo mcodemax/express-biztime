@@ -8,36 +8,43 @@ const db = require('../db')
 /** returns info for all invoices */
 router.get('', async (req, res, next) => {    
     try {
-        const results = await db.query('SELECT * FROM invoices') 
-        return res.send(results.rows); //maybe change to{invoices: {}}
+        const results = await db.query(`SELECT invoices.id, invoices.comp_code FROM invoices`); // using * in SQL is bad practice
+        return res.send({invoices: results.rows}); 
     } catch (error) {
-        return next(new ExpressError("Couldn't find data",404));
+        return next(new ExpressError("Couldn't find data", 404));
     }
 });
 
 /** return obj on given invoice*/
 router.get('/:id', async (req, res, next) => {    
-    const id = req.params.id;
-    
     try {
-        const results = await db.query('SELECT * FROM companies WHERE id='id', //add sanitizer) 
-        return res.send( {invoice: {results}} ); //might need to check what is returned
+        const id = req.params.id;
+        
+        const results = await db.query(`SELECT invoices.id, invoices.amt, invoices.comp_code, invoices.paid, invoices.add_date, invoices.paid_date, companies.company FROM invoices
+                                       JOIN companies ON invoices.comp_code=companies.code
+                                       WHERE invoices.comp_code=$1`
+                                      ,[id]); 
+        return res.send( {invoice: { results.rows[0] }} ); //might need to check what is returned
     } catch (error) {
         return next(new ExpressError("Couldn't find invoice",404));
     }
 });
 
 /** add an invoice*/
-router.post('', async (req, res, next) => {    
-    const comp_code = req.body.comp_code;
-    const amt = req.body.amt;
-    
+router.post('', async (req, res, next) => {       
     try {
+        const {comp_code, amt} = req.body;
+        
         //add invoice
-        const results = await db.query('SELECT * FROM invoices') 
-        return res.send(results.rows); //maybe change to{invoices: {}}
+        const results = await db.query(
+            `INSERT INTO invoices (comp_code, amt)
+            VALUES ($1, $2)
+            RETURNING id, comp_code, amt, paid, add_date, paid_date`,
+            [comp_code, amt]
+        );
+        return res.send(invoice: {results.rows[0]}); //maybe change to{invoices: {}}
     } catch (error) {
-        return next(new ExpressError("Couldn't find data",404));
+        return next(new ExpressError("Couldn't add invoice",404));
     }
 });
 
