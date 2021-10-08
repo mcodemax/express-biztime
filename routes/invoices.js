@@ -20,6 +20,7 @@ router.get('/:id', async (req, res, next) => {
     try {
         const id = req.params.id;
         
+        //might have to do a LEFT JOIN to display all of invoices.id, invoices.amt, invoices.comp_code, invoices.paid, invoices.add_date, invoices.paid_date
         const results = await db.query(`SELECT invoices.id, invoices.amt, invoices.comp_code, invoices.paid, invoices.add_date, invoices.paid_date, companies.company FROM invoices
                                        JOIN companies ON invoices.comp_code=companies.code
                                        WHERE invoices.comp_code=$1`
