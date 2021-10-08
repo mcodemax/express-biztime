@@ -65,17 +65,19 @@ router.put('/:id', async (req, res, next) => {
 });
 
 /** Deletes an invoice. */
-router.delete('/:code', async (req, res, next) => {    
-    const code = req.params.code;
-    const name = req.body.name;
-    const description = req.body.description;
-    
+router.delete('/:id', async (req, res, next) => {    
     try {
-        const results = await db.query('SELECT * FROM companies WHERE code=code', //add sanitizer) 
-        //then del it
-        return res.send({company: {results}}); //might need to check what is returned
+        const id = req.params.id;
+        
+        const results = await db.query('DELETE FROM invoices WHERE id=$1`,
+                                        [id]);
+
+        console.log(results.rowCount)
+        if(!results.rowCount) throw new ExpressError('No data to delete', 404);
+
+        return res.send({status: 'deleted'}); 
     } catch (error) {
-        return next(new ExpressError("Couldn't find invoice to delete",404));
+        return next(error);
     }
 });
 
