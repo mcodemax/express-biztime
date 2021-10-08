@@ -45,6 +45,7 @@ router.get('/:code', async (req, res, next) => {
         const code = req.params.code;
 	
 	  //hint: make 2 seperate quieres. 1 for company info, one for company's invoices; loops through invoices; return the data.
+	    //see soln 9:45 in lectures ;; also google adding property to js object
         const results = await db.query(`
             SELECT code, name, description FROM companies
             WHERE code=$1 
