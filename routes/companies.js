@@ -43,7 +43,8 @@ router.post('', async (req, res, next) => {
 router.get('/:code', async (req, res, next) => {    
     try {
         const code = req.params.code;
-
+	
+	  //hint: make 2 seperate quieres. 1 for company info, one for company's invoices; loops through invoices; return the data.
         const results = await db.query(`
             SELECT code, name, description FROM companies
             WHERE code=$1 
