@@ -50,19 +50,21 @@ router.post('', async (req, res, next) => {
 
 /** updates an invoice*/
 router.put('/:id', async (req, res, next) => {    
-    const code = req.params.code;
-    const name = req.body.name;
-    const description = req.body.description;
-    
     try {
-        const results = await db.query('SELECT * FROM companies WHERE code=code', //add sanitizer) 
-        //reassign results stuff
-        return res.send({company: {results}}); //might need to check what is returned
+        const id = req.params.id;
+        const { amt } = req.body;
+        
+        const results = await db.query(`SELECT * FROM invoices WHERE id=$1
+                                        RETURN id, comp_code, amt, paid, add_date, paid_date`,
+                                      [id])
+        
+        return res.send({ invoice: {results.rows[0]} }); //might need to check what is returned
     } catch (error) {
-        return next(new ExpressError("Couldn't find company",404));
+        return next(new ExpressError("Couldn't find invoice id",404));
     }
 });
 
+/** Deletes an invoice. */
 router.delete('/:code', async (req, res, next) => {    
     const code = req.params.code;
     const name = req.body.name;
@@ -73,7 +75,7 @@ router.delete('/:code', async (req, res, next) => {
         //then del it
         return res.send({company: {results}}); //might need to check what is returned
     } catch (error) {
-        return next(new ExpressError("Couldn't find company",404));
+        return next(new ExpressError("Couldn't find invoice to delete",404));
     }
 });
 
