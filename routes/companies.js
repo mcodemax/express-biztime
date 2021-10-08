@@ -46,6 +46,7 @@ router.get('/:code', async (req, res, next) => {
 	
 	  //hint: make 2 seperate quieres. 1 for company info, one for company's invoices; loops through invoices; return the data.
 	    //see soln 9:45 in lectures ;; also google adding property to js object
+	    //see M2M query express 2:50
         const results = await db.query(`
             SELECT code, name, description FROM companies
             WHERE code=$1 
