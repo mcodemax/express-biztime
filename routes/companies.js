@@ -47,15 +47,28 @@ router.get('/:code', async (req, res, next) => {
 	  //hint: make 2 seperate quieres. 1 for company info, one for company's invoices; loops through invoices; return the data.
 	    //see soln 9:45 in lectures ;; also google adding property to js object
 	    //see M2M query express 2:50
-        const results = await db.query(`
+        
+        const results_company = await db.query(`
             SELECT code, name, description FROM companies
             WHERE code=$1 
-            RETURNING code, name, description`, //returning needed otherwise won't return an error
-            [code]
+            `, [code]
         );
-        return res.send({company: results}); 
+        
+        const results_invoices = await db.query(`
+            SELECT invoices.id, invoices.amt, invoices.comp_code, invoices.paid, invoices.add_date, invoices.paid_date 
+            FROM invoices
+            WHERE comp_code=$1
+            `,[code]);   
+        console.log(results_invoices.rows)
+        if(results_invoices.rows.length > 0){
+            results_company.rows[0].invoices = results_invoices.rows;
+        }else{
+            results_company.rows[0].invoices = 'None';
+        }
+
+        return res.send({company: results_company.rows[0]}); 
     } catch (error) {
-        return next(new ExpressError("Couldn't find company",404));
+        return next(new ExpressError("Couldn't find company", 404));
     }
 });
 
