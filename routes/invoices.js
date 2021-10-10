@@ -64,17 +64,25 @@ router.post('', async (req, res, next) => {
 });
 
 /** updates an invoice
- {"amt": 50000}
+ {"amt": 50000, "paid":false}
 */
 router.put('/:id', async (req, res, next) => {    
     try {
         const id = req.params.id;
-        const { amt } = req.body;
+        const { amt, paid } = req.body;
+        let paidDate;
+
+        if(paid === true){
+            paidDate = new Date();
+        }else{
+            paidDate = null;
+        }
         
-        const results = await db.query(`UPDATE invoices SET amt=$1
-                                        WHERE id=$2
+        console.log({paidDate, paid});
+        const results = await db.query(`UPDATE invoices SET amt=$1, paid=$2, paid_date=$3
+                                        WHERE id=$4
                                         RETURNING id, comp_code, amt, paid, add_date, paid_date`
-                                    ,[amt, id]);
+                                    ,[amt, paid, paidDate, id]);
         
         return res.send( { invoice: results.rows[0] } ); //might need to check what is returned
     } catch (error) {
