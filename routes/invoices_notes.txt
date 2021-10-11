@@ -1,0 +1,45 @@
+/** updates an invoice
+ {"amt": 50000, "paid":false}
+
+ possible implementation if not amt is included
+*/
+router.put('/:id', async (req, res, next) => {    
+    try {
+        const id = req.params.id;
+        const { amt, paid } = req.body;
+        let paidDate;
+
+        if(paid === true){
+            paidDate = new Date();
+        }else{
+            paidDate = null;
+        }
+        
+        console.log({amt})
+        let x;
+        if(amt){
+            x = `amt=$4,`;
+        }else{
+            x = ' ';
+        }
+
+        console.log(`UPDATE invoices SET ${x} paid=$2, paid_date=$3 
+        WHERE id=$4
+        RETURNING id, comp_code, amt, paid, add_date, paid_date`)
+
+        //can implement by concatencating the string and changeing the whole string based on if amt is passed in
+
+        console.log({x})
+        //in sql query replace amt=$1 with ${x}
+
+        console.log({paidDate, paid}); //you might not be able to start @ $2
+        const results = await db.query(`UPDATE invoices SET ${x} paid=$1, paid_date=$2 
+                                        WHERE id=$3
+                                        RETURNING id, comp_code, amt, paid, add_date, paid_date`
+                                    ,[paid, paidDate, id, amt]);
+        
+        return res.send( { invoice: results.rows[0] } ); //might need to check what is returned
+    } catch (error) {
+        return next(new ExpressError("Couldn't find invoice id",404));
+    }
+});
