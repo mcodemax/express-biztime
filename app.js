@@ -5,6 +5,7 @@ const app = express();
 const ExpressError = require("./expressError");
 const companiesRoutes = require('./routes/companies');
 const invoicesRoutes = require('./routes/invoices');
+const industriesRoutes = require('./routes/industries');
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -15,6 +16,9 @@ app.use('/companies', companiesRoutes);
 
 /** Routes related to invoices*/
 app.use('/invoices', invoicesRoutes);
+
+/** Routes related to industries*/
+app.use('/invoices', industriesRoutes);
 
 /** 404 handler */
 app.use(function(req, res, next) {
