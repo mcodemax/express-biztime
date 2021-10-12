@@ -61,11 +61,30 @@ router.get('/:code', async (req, res, next) => {
             FROM invoices
             WHERE comp_code=$1
             `,[code]);   
-        console.log(results_invoices.rows)
+	    
+	    //new added code below
+	    //might need to change the SELECT statement below
+	const results_industries = await db.query(`
+            SELECT industries.name 
+            FROM companies_industries JOIN industries WHERE companies_industries.comp_code = companies.code
+            WHERE comp_code=$1
+            `,[code]);  
+	    
+	
+	    
         if(results_invoices.rows.length > 0){
             results_company.rows[0].invoices = results_invoices.rows;
         }else{
             results_company.rows[0].invoices = 'None';
+        }
+	
+	    
+	  //new added code
+	    //then loop through results industries to get full industry name for each asso to this particular company
+	if(results_industries.rows.length > 0){
+            results_company.rows[0].industries = results_invoices.rows;
+        }else{
+            results_company.rows[0].industries = 'None';
         }
 
         return res.send({company: results_company.rows[0]}); 
