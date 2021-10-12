@@ -41,3 +41,18 @@ INSERT INTO invoices (comp_Code, amt, paid, paid_date)
          ('apple', 200, false, null),
          ('apple', 300, true, '2018-01-01'),
          ('ibm', 400, false, null);
+         
+         
+INSERT INTO industries
+  VALUES ('engr', 'Engineering', 'They optimize stuff'),
+         ( 'tech','Technology', 'TThey make tech stuff'),
+         ('fin', 'Finance', 'They make money'),
+         ('sale', 'Sales', 'They seal deals.');
+         
+         
+INSERT INTO companies_industries
+  VALUES ('apple','engr'),
+         ('apple','tech').
+         ('ibm','sale'),
+         ('ibm','fin');
+  
