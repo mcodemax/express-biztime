@@ -18,7 +18,7 @@ app.use('/companies', companiesRoutes);
 app.use('/invoices', invoicesRoutes);
 
 /** Routes related to industries*/
-app.use('/invoices', industriesRoutes);
+app.use('/industries', industriesRoutes);
 
 /** 404 handler */
 app.use(function(req, res, next) {

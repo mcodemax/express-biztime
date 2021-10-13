@@ -1,8 +1,8 @@
 \c biztime
 
 DROP TABLE IF EXISTS invoices;
-DROP TABLE IF EXISTS companies;
-DROP TABLE IF EXISTS industries;
+DROP TABLE IF EXISTS companies CASCADE;
+DROP TABLE IF EXISTS industries CASCADE;
 DROP TABLE IF EXISTS companies_industries;
 
 CREATE TABLE companies (
@@ -52,7 +52,7 @@ INSERT INTO industries
          
 INSERT INTO companies_industries
   VALUES ('apple','engr'),
-         ('apple','tech').
+         ('apple','tech'),
          ('ibm','sale'),
          ('ibm','fin');
   
